@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class PlacementManager : MonoBehaviour
@@ -260,6 +260,22 @@ public class PlacementManager : MonoBehaviour
     }
 
 
+    /// <summary>
+    /// Returns every placed park structure (id prefix 3) exactly once.
+    /// A park occupies multiple cells that all point to the same StructureModel,
+    /// so duplicates are filtered out.
+    /// </summary>
+    public List<StructureModel> GetAllParks()
+    {
+        HashSet<StructureModel> parks = new HashSet<StructureModel>();
+        foreach (var structure in structureDictionary.Values)
+        {
+            if (structure != null && structure.IsPark)
+                parks.Add(structure);
+        }
+        return new List<StructureModel>(parks);
+    }
+
     private StructureModel GetStructureAt(Point point)
     {
         if (point != null)
@@ -382,7 +398,7 @@ public class PlacementManager : MonoBehaviour
                 {
                     var prefabs = StructureManager.Instance.parkStructuresPrefabs;
                     if (prefabIndex >= prefabs.Length) break;
-                    PlaceObjectOnTheMap(data.position, prefabs[prefabIndex].prefab, CellType.Structure, data.structureId, 2, 2);
+                    PlaceObjectOnTheMap(data.position, prefabs[prefabIndex].prefab, CellType.Structure, data.structureId, StructureManager.ParkWidth, StructureManager.ParkHeight);
                     break;
                 }
                 default:

@@ -1,4 +1,4 @@
-﻿using SVS;
+using SVS;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -8,6 +8,10 @@ using UnityEngine;
 public class StructureManager : MonoBehaviour
 {
     public static StructureManager Instance;
+
+    // Footprint (in grid cells) of every park structure.
+    public const int ParkWidth = 2;
+    public const int ParkHeight = 2;
 
     public StructurePrefabWeighted[] housesPrefabe, specialPrefabs, parkStructuresPrefabs;
     //public PlacementManager placementManager;
@@ -38,8 +42,8 @@ public class StructureManager : MonoBehaviour
 
     internal void PlaceParkStructure(Vector3Int position)
     {
-        int width = 2;
-        int height = 2;
+        int width = ParkWidth;
+        int height = ParkHeight;
         if(CheckParkStructure(position, width , height))
         {
             int randomIndex = GetRandomWeightedIndex(parkStructureWeights);

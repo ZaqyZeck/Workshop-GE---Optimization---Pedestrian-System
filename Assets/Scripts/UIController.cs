@@ -24,6 +24,9 @@ public class UIController : MonoBehaviour
         destroyStructureButton, enterBuildModeButton, exitBuildModeButton, saveStructureButton, deleteDataButton,
         spawnPedestrainButton, spawnCarButton;
 
+    [Tooltip("Optional: sends every pedestrian to a park of a different type.")]
+    public Button changeParkButton;
+
     public GameObject buildButtonGroup;
 
     public Color outlineColor;
@@ -88,6 +91,10 @@ public class UIController : MonoBehaviour
         spawnPedestrainButton.onClick.AddListener(() =>
         {
             AiDirector.Instance.SpawnAllAagents();
+        });
+        if (changeParkButton != null) changeParkButton.onClick.AddListener(() =>
+        {
+            AiDirector.Instance.SendAllAgentsToDifferentParks();
         });
     }
 
