@@ -50,7 +50,7 @@ namespace SimpleCity.AI
 
         [Header("Park switching")]
         [Tooltip("Automatically walk to a park of a different type after staying for a random duration.")]
-        [SerializeField] private bool autoChangePark = true;
+        [SerializeField] private bool autoChangePark = false;
         [Tooltip("Random range (seconds) an agent stays in a park before switching.")]
         [SerializeField] private Vector2 parkStayDuration = new Vector2(15f, 30f);
 
@@ -74,7 +74,7 @@ namespace SimpleCity.AI
         public AgentState State { get; private set; } = AgentState.Idle;
 
         /// <summary>Agents with the same type flock together, different types avoid each other.</summary>
-        public int AgentType { get; private set; }
+        public int AgentType;
 
         public StructureModel CurrentPark { get; private set; }
         public ParkType CurrentParkType { get; private set; } = ParkType.None;
@@ -125,7 +125,7 @@ namespace SimpleCity.AI
         /// </summary>
         public void InitializeInPark(int agentType, StructureModel park)
         {
-            AgentType = agentType;
+            //AgentType = agentType;
             velocity = transform.forward * minWanderSpeed;
             EnterPark(park);
         }
@@ -282,15 +282,15 @@ namespace SimpleCity.AI
             rb.linearVelocity = velocity;
             transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(velocity), deltaTime * rotationSpeed);
 
-            if (autoChangePark)
-            {
-                parkStayTimer -= deltaTime;
-                if (parkStayTimer <= 0f && MoveToDifferentPark() == false)
-                {
-                    // No reachable park of another type right now, try again later.
-                    ResetParkStayTimer();
-                }
-            }
+            //if (autoChangePark)
+            //{
+            //    parkStayTimer -= deltaTime;
+            //    if (parkStayTimer <= 0f && MoveToDifferentPark() == false)
+            //    {
+            //        // No reachable park of another type right now, try again later.
+            //        ResetParkStayTimer();
+            //    }
+            //}
         }
 
         /// <summary>
