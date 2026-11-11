@@ -33,7 +33,7 @@ public class GameManager : MonoBehaviour
         UIController.Instance.ResetButtonColor();
         PathVisualizer.Instance.ResetPath();
         // Subscribe to GameEvent instead of InputManager instance events
-GameEvent.OnMouseClick += TrySelectingAgent;
+        GameEvent.OnMouseClick += TrySelectingAgent;
     }
 
     private void TrySelectingAgent(Ray ray)
