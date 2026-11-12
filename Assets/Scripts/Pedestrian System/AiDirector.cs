@@ -257,7 +257,7 @@ namespace SimpleCity.AI
                     continue;
 
                 agentCount++;
-                if (aiAgent.MoveToDifferentPark())
+                if (aiAgent.MovingToDifferentPark())
                     sentCount++;
             }
 

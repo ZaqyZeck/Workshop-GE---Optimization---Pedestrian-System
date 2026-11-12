@@ -114,11 +114,11 @@ namespace SimpleCity.AI
             pathColor = UnityEngine.Random.ColorHSV(0f, 1f, 0f, 1f, 0f, 1f);
         }
 
-        public void ShowPath()
-        {
-            if (pathVisualizer != null)
-                pathVisualizer.ShowPath(pathToGo, this, pathColor);
-        }
+        //public void ShowPath()
+        //{
+        //    if (pathVisualizer != null)
+        //        pathVisualizer.ShowPath(pathToGo, this, pathColor);
+        //}
 
         /// <summary>
         /// Places the agent inside a park where it starts wandering.
@@ -134,7 +134,7 @@ namespace SimpleCity.AI
         /// Directs this agent to walk to a park of a different type (Green / Red / Yellow).
         /// Returns false if the agent is already traveling or no reachable park was found.
         /// </summary>
-        public bool MoveToDifferentPark()
+        public bool MovingToDifferentPark()
         {
             if (State != AgentState.Wandering || AiDirector.Instance == null)
                 return false;

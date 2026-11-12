@@ -38,12 +38,12 @@ public class GameManager : MonoBehaviour
 
     private void TrySelectingAgent(Ray ray)
     {
-        GameObject hitObject = ObjectDetector.Instance.RaycastAll(ray);
-        if (hitObject != null)
-        {
-            var agentScript = hitObject.GetComponent<AiAgent>();
-            agentScript?.ShowPath();
-        }
+        //GameObject hitObject = ObjectDetector.Instance.RaycastAll(ray);
+        //if (hitObject != null)
+        //{
+        //    var agentScript = hitObject.GetComponent<AiAgent>();
+        //    agentScript?.ShowPath();
+        //}
     }
 
     private void ParkStructurePlacement()
