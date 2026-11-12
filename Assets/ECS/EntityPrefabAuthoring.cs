@@ -12,21 +12,21 @@ namespace SimpleCity.AI.ECS
     /// Put this on a GameObject inside a subscene. Each prefab needs AiAgentAuthoring.
     /// The index in this array is the agent type (same as the old pedestrianPrefabs array).
     /// </summary>
-    public class AiAgentPrefabsAuthoring : MonoBehaviour
+    public class EntityPrefabAuthoring : MonoBehaviour
     {
         public GameObject[] pedestrianPrefabs;
 
-        class Baker : Baker<AiAgentPrefabsAuthoring>
+        class Baker : Baker<EntityPrefabAuthoring>
         {
-            public override void Bake(AiAgentPrefabsAuthoring authoring)
+            public override void Bake(EntityPrefabAuthoring authoring)
             {
-                var e = GetEntity(TransformUsageFlags.None);
-                var buffer = AddBuffer<AgentPrefabElement>(e);
+                Entity e = GetEntity(TransformUsageFlags.None);
+                DynamicBuffer<AgentPrefabElement> buffer = AddBuffer<AgentPrefabElement>(e);
 
                 if (authoring.pedestrianPrefabs == null)
                     return;
 
-                foreach (var prefab in authoring.pedestrianPrefabs)
+                foreach (GameObject prefab in authoring.pedestrianPrefabs)
                 {
                     buffer.Add(new AgentPrefabElement
                     {

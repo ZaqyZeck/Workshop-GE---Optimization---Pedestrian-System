@@ -7,7 +7,6 @@ public class InputManager : MonoBehaviour
 {
     public static InputManager Instance { get; private set; }
 
-
     public event Action<Ray> OnMouseClick, OnMouseHold;
     public event Action OnMouseUp, OnEscape;
     private Vector2 mouseMovementVector = Vector2.zero;

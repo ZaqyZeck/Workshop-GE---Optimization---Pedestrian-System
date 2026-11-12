@@ -86,15 +86,18 @@ public class UIController : MonoBehaviour
         });
         spawnCarButton.onClick.AddListener(() =>
         {
-            AiDirector.Instance.SpawnACar();
+            //AiDirector.Instance.SpawnACar();
+            AiEntityDirector.Instance.SpawnACar(); 
         });
         spawnPedestrainButton.onClick.AddListener(() =>
         {
-            AiDirector.Instance.SpawnAllAagents();
+            //AiDirector.Instance.SpawnAllAagents();
+            AiEntityDirector.Instance.SpawnAllAagents();
         });
         if (changeParkButton != null) changeParkButton.onClick.AddListener(() =>
         {
-            AiDirector.Instance.SendAllAgentsToDifferentParks();
+            //AiDirector.Instance.SendAllAgentsToDifferentParks();
+            AiEntityDirector.Instance.SendAllAgentsToDifferentParks();
         });
     }
 

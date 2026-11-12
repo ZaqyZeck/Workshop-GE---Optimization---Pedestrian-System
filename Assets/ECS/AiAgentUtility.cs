@@ -15,7 +15,7 @@ namespace SimpleCity.AI.ECS
         /// <summary>Call when a park structure is placed. Keep the returned Entity in your StructureModel / grid.</summary>
         public static Entity CreatePark(EntityManager em, ParkType type, UnityEngine.Vector3Int roadPosition, UnityEngine.Rect bounds)
         {
-            var e = em.CreateEntity(typeof(ParkData));
+            Entity e = em.CreateEntity(typeof(ParkData));
             em.SetComponentData(e, new ParkData
             {
                 Type = type,
@@ -33,13 +33,12 @@ namespace SimpleCity.AI.ECS
                 em.DestroyEntity(park);
         }
 
-        /// <summary>Places the agent inside a park where it starts wandering.</summary>
         public static void InitializeInPark(EntityManager em, Entity agent, int agentType, Entity park)
         {
-            var state = em.GetComponentData<AiAgentState>(agent);
-            var cfg = em.GetComponentData<AiAgentConfig>(agent);
-            var parkData = em.GetComponentData<ParkData>(park);
-            var xform = em.GetComponentData<LocalTransform>(agent);
+            AiAgentState state = em.GetComponentData<AiAgentState>(agent);
+            AiAgentConfig cfg = em.GetComponentData<AiAgentConfig>(agent);
+            ParkData parkData = em.GetComponentData<ParkData>(park);
+            LocalTransform xform = em.GetComponentData<LocalTransform>(agent);
 
             state.AgentType = agentType;
             state.Random = Unity.Mathematics.Random.CreateFromIndex((uint)(agent.Index + 1) * 2654435761u);

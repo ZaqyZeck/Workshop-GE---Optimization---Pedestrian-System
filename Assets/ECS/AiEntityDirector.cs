@@ -127,7 +127,7 @@ namespace SimpleCity.AI
             }
 
             // Keep the prefab's scale.
-            var xform = em.GetComponentData<LocalTransform>(agent);
+            LocalTransform xform = em.GetComponentData<LocalTransform>(agent);
             xform.Position = spawnPosition;
             xform.Rotation = spawnRotation;
             em.SetComponentData(agent, xform);
@@ -142,7 +142,7 @@ namespace SimpleCity.AI
         /// <summary>Reads the prefab entities baked by AiAgentPrefabsAuthoring (index == agent type).</summary>
         private bool TryGetPrefabEntities(out NativeArray<Entity> prefabs)
         {
-            prefabs = default;
+            prefabs = new NativeArray<Entity>();
 
             if (!prefabQueryCreated)
             {
@@ -222,7 +222,7 @@ namespace SimpleCity.AI
         /// <summary>Park entity for a StructureModel, created on first use.</summary>
         private Entity GetOrCreateParkEntity(StructureModel park)
         {
-            var em = EM;
+            EntityManager em = EM;
 
             if (parkEntities.TryGetValue(park, out Entity existing) && em.Exists(existing))
                 return existing;
@@ -575,6 +575,11 @@ namespace SimpleCity.AI
             carPath.Clear();
 
             Debug.Log("All cars removed.");
+        }
+
+        public void SetPedestrianNumber(int pedestrianNumber)
+        {
+            numberOfPedestrian = pedestrianNumber;
         }
 
         private void Update()
