@@ -1,141 +1,65 @@
 using Unity.Burst;
-using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
-using Unity.Physics;
 using Unity.Transforms;
+using Unity.VisualScripting;
+using UnityEngine.InputSystem;
+//using UnityEngine;
 
 [BurstCompile]
-[UpdateInGroup(typeof(SimulationSystemGroup))]
-public partial struct PlayerSystem : ISystem
+public partial struct PlayerMovementSystem : ISystem
 {
-    private ComponentLookup<PhysicsVelocity> physicsVelocityLookup;
-
     [BurstCompile]
     public void OnCreate(ref SystemState state)
     {
-        state.RequireForUpdate<PlayerComponent>();
-        physicsVelocityLookup = state.GetComponentLookup<PhysicsVelocity>(false);
+        state.RequireForUpdate<PlayerComponentConfig>();
+        state.RequireForUpdate<PlayerComponentState>();
     }
 
     [BurstCompile]
     public void OnUpdate(ref SystemState state)
     {
-        //// 1. One-time physics setup for any newly baked ECS Player entity with Unity.Physics components
-        //var ecb = new EntityCommandBuffer(Allocator.Temp);
-        //foreach (var (physicsMass, collider, entity) in SystemAPI
-        //             .Query<RefRW<PhysicsMass>, RefRO<PhysicsCollider>>()
-        //             .WithAll<PlayerPhysicsStabilizer>()
-        //             .WithEntityAccess())
-        //{
-        //    physicsMass.ValueRW.InverseInertia = float3.zero;
+        float deltaTime = SystemAPI.Time.DeltaTime;
 
-        //    if (collider.ValueRO.IsValid)
-        //    {
-        //        ref var colBlob = ref collider.ValueRO.Value.Value;
-        //        if (colBlob.GetCollisionResponse() == CollisionResponsePolicy.RaiseTriggerEvents)
-        //        {
-        //            colBlob.SetCollisionResponse(CollisionResponsePolicy.Collide);
-        //        }
-        //    }
-
-        //    ecb.RemoveComponent<PlayerPhysicsStabilizer>(entity);
-        //}
-        //ecb.Playback(state.EntityManager);
-        //ecb.Dispose();
-
-        // 2. Movement & Rotation Update
-        float dt = SystemAPI.Time.DeltaTime;
-        physicsVelocityLookup.Update(ref state);
-
-        foreach ((RefRW<PlayerComponent> playerData, RefRW<LocalTransform> transform, Entity player) 
-            in SystemAPI.Query<RefRW<PlayerComponent>, RefRW<LocalTransform>>().WithEntityAccess())
+        foreach ((RefRO<PlayerComponentConfig> playerConfig, RefRW<PlayerComponentState> playerState, RefRW <LocalTransform> playerTransform, Entity playerEntity) 
+            in SystemAPI.Query<RefRO<PlayerComponentConfig>, RefRW<PlayerComponentState>, RefRW<LocalTransform>>().WithEntityAccess())
         {
+            if (!playerState.ValueRO.HasTarget) return;
 
-            // Prevent physics velocity from causing any unwanted gliding/drifting
-            if (physicsVelocityLookup.HasComponent(player))
-            {
-                var velocity = physicsVelocityLookup[player];
-                velocity.Linear = float3.zero;
-                velocity.Angular = float3.zero;
-                physicsVelocityLookup[player] = velocity;
-            }
-
-            if (playerData.ValueRO.State != Player.PlayerState.Alive)
-            {
-                playerData.ValueRW.HasTarget = false;
-                playerData.ValueRW.IsMoving = false;
-                continue;
-            }
-
-            if (!playerData.ValueRO.HasTarget)
-            {
-                playerData.ValueRW.IsMoving = false;
-                continue;
-            }
-
-            float3 currentPos = transform.ValueRO.Position;
-            float3 targetPos = new float3(
-                playerData.ValueRO.TargetPosition.x,
-                currentPos.y,
-                playerData.ValueRO.TargetPosition.z
-            );
-            playerData.ValueRW.TargetPosition = targetPos;
-
-            float3 direction = targetPos - currentPos;
+            playerState.ValueRW.TargetPosition.y = playerTransform.ValueRO.Position.y;
+            float3 direction = playerState.ValueRO.TargetPosition - playerTransform.ValueRO.Position;
             direction.y = 0f;
 
-            float distance = math.length(direction);
-            float stoppingDistance = playerData.ValueRO.StoppingDistance;
-
-            if (distance <= stoppingDistance)
+            if (math.length(direction) <= playerConfig.ValueRO.stoppingDistance)
             {
-                playerData.ValueRW.HasTarget = false;
-                playerData.ValueRW.IsMoving = false;
-                continue;
+                playerState.ValueRW.HasTarget = false;
+                return;
             }
 
-            // Rotate towards movement direction (equivalent to Quaternion.RotateTowards)
-            float3 forwardDir = direction / distance;
-            quaternion targetRotation = quaternion.LookRotationSafe(forwardDir, math.up());
-            transform.ValueRW.Rotation = RotateTowards(
-                transform.ValueRO.Rotation,
+            //quaternion targetRotation = Quaternion.LookRotation(direction);
+
+            //float3
+            float3 forwardDirection = direction / math.length(direction);
+
+            quaternion targetRotation = quaternion.LookRotation(forwardDirection, math.up());
+
+            playerTransform.ValueRW.Rotation = RotateTowards(
+                playerTransform.ValueRO.Rotation,
                 targetRotation,
-                math.radians(playerData.ValueRO.RotationSpeed) * dt
+                playerConfig.ValueRO.rotationSpeed * deltaTime
             );
 
-            // Move towards target position (equivalent to Vector3.MoveTowards)
-            float step = playerData.ValueRO.MoveSpeed * dt;
-            float3 newPos;
-            if (distance <= step)
-            {
-                newPos = targetPos;
-            }
-            else
-            {
-                newPos = currentPos + forwardDir * step;
-            }
+            float step = playerConfig.ValueRO.moveSpeed * deltaTime;
+            playerTransform.ValueRW.Position += step * forwardDirection;
 
-            transform.ValueRW.Position = newPos;
-
-            // Check remaining distance so we stop immediately on arrival without gliding
-            float3 remaining = targetPos - newPos;
+            float3 remaining = playerState.ValueRO.TargetPosition - playerTransform.ValueRO.Position;
             remaining.y = 0f;
-            if (math.length(remaining) <= stoppingDistance)
+            if (math.length(remaining) <= playerConfig.ValueRO.stoppingDistance)
             {
-                playerData.ValueRW.HasTarget = false;
-                playerData.ValueRW.IsMoving = false;
-            }
-            else
-            {
-                playerData.ValueRW.IsMoving = true;
+                playerState.ValueRW.HasTarget = false;
             }
         }
-    }
 
-    [BurstCompile]
-    public void OnDestroy(ref SystemState state)
-    {
     }
 
     private static quaternion RotateTowards(quaternion from, quaternion to, float maxRadiansDelta)
@@ -145,14 +69,47 @@ public partial struct PlayerSystem : ISystem
         {
             return to;
         }
-
         float angle = math.acos(math.clamp(dot, -1f, 1f)) * 2f;
         if (angle <= maxRadiansDelta || angle < 0.000001f)
         {
             return to;
         }
-
         float t = math.saturate(maxRadiansDelta / angle);
         return math.slerp(from, to, t);
     }
 }
+
+public partial struct InputSystem : ISystem
+{
+    [BurstCompile]
+    public void OnCreate(ref SystemState state)
+    {
+        state.RequireForUpdate<PlayerComponentState>();
+    }
+
+    public void OnUpdate(ref SystemState state)
+    {
+        if (!Mouse.current.rightButton.wasPressedThisFrame) return;
+
+        foreach (RefRW<PlayerComponentState> playerState
+            in SystemAPI.Query<RefRW<PlayerComponentState>>())
+        {
+            //bool isCorrect = false;
+            float3 targetPosition = (float3) InputManager.Instance.GetMousePosition(out bool isCorrect);
+
+            if(!isCorrect) return;
+
+            playerState.ValueRW.HasTarget = true;
+            playerState.ValueRW.TargetPosition = targetPosition;
+        }
+
+    }
+}
+
+public partial class PlayerCameraSystem : SystemBase
+{
+    protected override void OnUpdate()
+    {
+        // How to get and save CameraMovement reference
+    }
+} 

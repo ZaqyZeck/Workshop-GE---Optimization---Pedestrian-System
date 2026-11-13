@@ -1,17 +1,17 @@
 using Unity.Entities;
 using Unity.Mathematics;
 
-public struct PlayerComponent : IComponentData
+public struct PlayerComponentConfig : IComponentData
 {
-    public Player.PlayerState State;
-
-    public float MoveSpeed;
-    public float RotationSpeed;
-    public float StoppingDistance;
-
+    // stat yang sudah ditetapkan
+    public float moveSpeed ;
+    public float rotationSpeed;
+    public float stoppingDistance;
+}
+public struct PlayerComponentState : IComponentData
+{
+    // attribut yang akan berubah
     public float3 TargetPosition;
     public bool HasTarget;
     public bool IsMoving;
 }
-
-public struct PlayerPhysicsStabilizer : IComponentData { }

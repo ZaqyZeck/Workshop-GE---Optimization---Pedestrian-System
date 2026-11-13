@@ -3,6 +3,7 @@
 
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -19,6 +20,7 @@ namespace SVS
         public float sensitivity = 10;
 
         [SerializeField] private Transform CameraTarget;
+        [SerializeField] private Vector3 CameraPosition;
 
         private void Awake()
         {
@@ -28,6 +30,7 @@ namespace SVS
         private void Start()
         {
             gameCamera = GetComponent<Camera>();
+            CameraPosition = transform.position;
         }
 
         public void MoveCamera(Vector3 inputVector)
@@ -44,8 +47,13 @@ namespace SVS
             if(CameraTarget != null)MoveCamera(new Vector3(CameraTarget.position.x, 5, CameraTarget.position.z));
             else
             {
-
+                MoveCamera(CameraPosition);
             }
+        }
+
+        public void SetCameraPosition(Vector3 position)
+        {
+            gameCamera.transform.position = position;
         }
     }
 }

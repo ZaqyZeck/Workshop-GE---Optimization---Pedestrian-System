@@ -97,6 +97,29 @@ public class InputManager : MonoBehaviour
         return null;
     }
 
+    public Vector3? GetMousePosition(out bool isCorrect)
+    {
+        Ray ray = mainCamera.ScreenPointToRay(Mouse.current.position.value);
+
+        RaycastHit[] hits = Physics.RaycastAll(
+            ray,
+            raycastDistance,
+            groundLayer
+        );
+
+        foreach (RaycastHit hit in hits)
+        {
+            if (hit.collider.CompareTag(groundTag))
+            {
+                isCorrect = true;
+                return hit.point;
+            }
+        }
+
+        isCorrect = false;
+        return null;
+    }
+
 
 
     public void ClearEvents()
