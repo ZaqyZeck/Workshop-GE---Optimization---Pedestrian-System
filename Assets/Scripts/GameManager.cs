@@ -113,8 +113,8 @@ public class GameManager : MonoBehaviour
             callback.Invoke(result.Value);
     }
 
-    private void Update()
-    {
-        CameraMovement.Instance.MoveCamera(new Vector3(InputManager.Instance.CameraMovementVector.x, 0, InputManager.Instance.CameraMovementVector.y));
-    }
+    //private void Update()
+    //{
+    //    CameraMovement.Instance.MoveCamera(new Vector3(InputManager.Instance.CameraMovementVector.x, 0, InputManager.Instance.CameraMovementVector.y));
+    //}
 }

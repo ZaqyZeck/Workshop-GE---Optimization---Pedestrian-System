@@ -18,6 +18,8 @@ namespace SVS
         public float maxOrthographicSize = 5f, minOrthographicSize = 0.5f;
         public float sensitivity = 10;
 
+        [SerializeField] private Transform CameraTarget;
+
         private void Awake()
         {
             Instance = this;
@@ -27,16 +29,19 @@ namespace SVS
         {
             gameCamera = GetComponent<Camera>();
         }
+
         public void MoveCamera(Vector3 inputVector)
         {
-            var movementVector = Quaternion.Euler(0,30,0) * inputVector;
-            gameCamera.transform.position += movementVector * Time.deltaTime * cameraMovementSpeed;
+            //var movementVector = Quaternion.Euler(0,30,0) * inputVector;
+            gameCamera.transform.position = inputVector;
         }
 
         private void Update()
         {
             var scrollInput = Mouse.current.scroll.y.ReadValue() * sensitivity;
             gameCamera.orthographicSize = Mathf.Clamp(gameCamera.orthographicSize - scrollInput, minOrthographicSize, maxOrthographicSize);
+
+            MoveCamera(new Vector3(CameraTarget.position.x, 5, CameraTarget.position.z));
         }
     }
 }

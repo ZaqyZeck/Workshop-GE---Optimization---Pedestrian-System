@@ -60,6 +60,15 @@ public class CommandController : MonoBehaviour
                 DebugCommand("");
                 DebugBuildMode("Build Mode: Off");
                 return;
+            case "revive":
+                GameEvent.OnPlayerRevive?.Invoke();
+                DebugCommand("Player hidup lagi");
+                break;
+            case "die":
+                GameEvent.OnPlayerDie?.Invoke();
+                DebugCommand("Player mati");
+                break;
+
         }
 
         int spaceIndex = cleanCommand.IndexOf(' ');

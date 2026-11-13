@@ -1,4 +1,5 @@
 ﻿using System;
+//using Unity.Physics;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
@@ -13,6 +14,11 @@ public class InputManager : MonoBehaviour
     public Vector2 CameraMovementVector { get => mouseMovementVector; }
     [SerializeField]
     Camera mainCamera;
+
+    [Header("RaycastAttribut")]
+    [SerializeField] private LayerMask groundLayer = ~0;
+    [SerializeField] private string groundTag = "Ground";
+    [SerializeField] private float raycastDistance = 500f;
 
     private void Awake()
     {
@@ -68,6 +74,30 @@ public class InputManager : MonoBehaviour
             (Keyboard.current.wKey.isPressed ? 1 : 0) - (Keyboard.current.sKey.isPressed ? 1 : 0)
         );
     }
+
+
+    public Vector3? GetMousePosition()
+    {
+        Ray ray = mainCamera.ScreenPointToRay(Mouse.current.position.value);
+
+        RaycastHit[] hits = Physics.RaycastAll(
+            ray,
+            raycastDistance,
+            groundLayer
+        );
+
+        foreach (RaycastHit hit in hits)
+        {
+            if (hit.collider.CompareTag(groundTag))
+            {
+                return hit.point;
+            }
+        }
+
+        return null;
+    }
+
+
 
     public void ClearEvents()
     {

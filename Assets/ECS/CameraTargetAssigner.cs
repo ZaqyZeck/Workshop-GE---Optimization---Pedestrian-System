@@ -19,7 +19,6 @@ namespace TMG.Town
             // Query the spawned entity with CameraTargetReference
             var query = entityManager.CreateEntityQuery(typeof(CameraTargetReference));
 
-            // selain hassingleton apakah ada cara lain
             if (query.HasSingleton<CameraTargetReference>())
             {
                 var targetRef = query.GetSingleton<CameraTargetReference>();

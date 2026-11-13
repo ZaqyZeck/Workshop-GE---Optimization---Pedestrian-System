@@ -23826,6 +23826,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mainCamera: {fileID: 2044889017}
+  groundLayer:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  groundTag: Ground
+  raycastDistance: 500
 --- !u!4 &1916978683
 Transform:
   m_ObjectHideFlags: 0
@@ -25443,6 +25448,7 @@ MonoBehaviour:
   maxOrthographicSize: 5
   minOrthographicSize: 0.5
   sensitivity: 1
+  CameraTarget: {fileID: 0}
 --- !u!114 &2044889015
 MonoBehaviour:
   m_ObjectHideFlags: 0

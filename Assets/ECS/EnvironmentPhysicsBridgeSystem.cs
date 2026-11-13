@@ -129,16 +129,11 @@ namespace TMG.Town
 
         private void ProcessCollider(UnityCollider col, HashSet<int> activeIds)
         {
-            if (col == null || !col.enabled || col.isTrigger || !col.gameObject.activeInHierarchy)
-                return;
+            if (col == null || !col.enabled || col.isTrigger || !col.gameObject.activeInHierarchy) return;
 
-            // Skip colliders that belong to an open SubScene (those are already baked by Unity Physics)
-            if (col.gameObject.scene.isSubScene)
-                return;
+            if (col.gameObject.scene.isSubScene) return;
 
-            // Skip dynamic Rigidbodies such as Cars if they aren't meant to be static environment colliders
-            if (col.attachedRigidbody != null && !col.attachedRigidbody.isKinematic)
-                return;
+            if (col.attachedRigidbody != null && !col.attachedRigidbody.isKinematic) return;
 
             int instanceId = col.GetInstanceID();
             if (!activeIds.Add(instanceId))
