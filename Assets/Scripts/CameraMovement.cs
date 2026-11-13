@@ -41,7 +41,11 @@ namespace SVS
             var scrollInput = Mouse.current.scroll.y.ReadValue() * sensitivity;
             gameCamera.orthographicSize = Mathf.Clamp(gameCamera.orthographicSize - scrollInput, minOrthographicSize, maxOrthographicSize);
 
-            MoveCamera(new Vector3(CameraTarget.position.x, 5, CameraTarget.position.z));
+            if(CameraTarget != null)MoveCamera(new Vector3(CameraTarget.position.x, 5, CameraTarget.position.z));
+            else
+            {
+
+            }
         }
     }
 }

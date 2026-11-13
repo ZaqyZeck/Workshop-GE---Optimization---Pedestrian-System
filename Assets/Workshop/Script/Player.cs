@@ -20,14 +20,9 @@ public class Player : MonoBehaviour
     [Header("Animator")]
     [SerializeField] private Animator playerAnimator;
 
-    private Rigidbody rb;
+    //private Rigidbody rb;
     private Vector3 targetPosition;
     private bool hasTarget;
-
-    private void Awake()
-    {
-        rb = GetComponent<Rigidbody>();
-    }
 
     private void Update()
     {
@@ -36,14 +31,6 @@ public class Player : MonoBehaviour
         HandleMouseInput();
         HandleMovement();
         HandleAnimation();
-    }
-
-    private void FixedUpdate()
-    {
-        if (rb == null || rb.isKinematic) return;
-
-        rb.linearVelocity = Vector3.zero;
-        rb.angularVelocity = Vector3.zero;
     }
 
     private void HandleMouseInput()
@@ -112,11 +99,6 @@ public class Player : MonoBehaviour
     {
         hasTarget = false;
 
-        if (rb != null && !rb.isKinematic)
-        {
-            rb.linearVelocity = Vector3.zero;
-            rb.angularVelocity = Vector3.zero;
-        }
     }
 
     public bool IsMoving()
