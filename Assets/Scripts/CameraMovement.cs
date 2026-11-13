@@ -47,12 +47,13 @@ namespace SVS
             if(CameraTarget != null)MoveCamera(new Vector3(CameraTarget.position.x, 5, CameraTarget.position.z));
             else
             {
-                MoveCamera(CameraPosition);
+                MoveCamera(new Vector3 (CameraPosition.x, transform.position.y, CameraPosition.z));
             }
         }
 
         public void SetCameraPosition(Vector3 position)
         {
+            CameraPosition = position;
             gameCamera.transform.position = position;
         }
     }

@@ -1,3 +1,4 @@
+using SVS;
 using Unity.Entities;
 using Unity.Mathematics;
 
@@ -14,4 +15,9 @@ public struct PlayerComponentState : IComponentData
     public float3 TargetPosition;
     public bool HasTarget;
     public bool IsMoving;
+}
+
+public class PlayerCameraReference : IComponentData
+{
+    public CameraMovement cameraMovement;
 }

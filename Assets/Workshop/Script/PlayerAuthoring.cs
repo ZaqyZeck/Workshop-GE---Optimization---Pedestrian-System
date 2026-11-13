@@ -23,6 +23,11 @@ public class PlayerAuthoring : MonoBehaviour
             });
 
             AddComponent(player, new PlayerComponentState());
+
+            AddComponentObject(player, new PlayerCameraReference
+            {
+                cameraMovement = null
+            });
         }
     }
 }
